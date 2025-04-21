@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Button } from "./ui/button";
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import Link from 'next/link';
+import { Button } from './ui/button';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -8,7 +8,7 @@ interface HeaderProps {
 
 export default function Header({ onMenuClick }: HeaderProps) {
   return (
-    <nav className="p-4 bg-white shadow-md flex justify-between items-center">
+    <nav className="flex items-center justify-between bg-white p-4 shadow-md">
       <div className="flex items-center space-x-4">
         <button onClick={onMenuClick}>
           <Bars3Icon className="size-6" />
