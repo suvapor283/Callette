@@ -1,11 +1,7 @@
-'use client';
-
 import './globals.css';
 import localFont from 'next/font/local';
-import Header from '@/components/Header';
-import Sidebar from '@/components/Sidebar';
+import ClientLayout from './ClientLayout';
 import Footer from '@/components/Footer';
-import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 
 const pretendard = localFont({
@@ -14,21 +10,22 @@ const pretendard = localFont({
   weight: '100 900',
 });
 
+export const metadata = {
+  title: 'Callette - Calendar App',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <html lang="ko">
       <body
         className={`${pretendard.variable} min-w-[600px] antialiased`}
         style={{ fontFamily: 'var(--font-pretendard)' }}
       >
-        <Header onMenuClick={() => setSidebarOpen(true)} />
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <ClientLayout />
         <Card className="mx-auto my-6 flex min-h-screen w-[80%] min-w-[600px] flex-col p-6">
           {children}
         </Card>
