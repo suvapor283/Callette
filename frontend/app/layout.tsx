@@ -24,16 +24,14 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${pretendard.variable} flex min-h-screen flex-col bg-gray-100 antialiased`}
+        className={`${pretendard.variable} min-w-[600px] antialiased`}
         style={{ fontFamily: 'var(--font-pretendard)' }}
       >
         <Header onMenuClick={() => setSidebarOpen(true)} />
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <div className="flex flex-grow items-center justify-center py-6">
-          <Card className="min-h-screen w-[80%] min-w-[700px] p-6">
-            {children}
-          </Card>
-        </div>
+        <Card className="mx-auto my-6 flex min-h-screen w-[80%] min-w-[600px] flex-col p-6">
+          {children}
+        </Card>
         <Footer />
       </body>
     </html>

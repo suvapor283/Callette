@@ -21,7 +21,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
             sign in
           </Button>
         </Link>
-        <Link href="#">
+        <Link href="/auth/signup">
           <Button className="w-[80px]">sign up</Button>
         </Link>
       </div>
