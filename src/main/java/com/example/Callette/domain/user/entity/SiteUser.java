@@ -23,21 +23,18 @@ public class SiteUser {
     @Column(nullable = false)
     private String password;
 
-    @Column(unique = true)
-    private String email;
+    @Column(nullable = false, unique = true)
+    private String nickname;
 
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
-    private String gender;
-
-    @Column(nullable = false, unique = true)
-    private String nickname;
 
     @Column(nullable = false)
     private String birthDate;
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
+
+    @Column(unique = true)
+    private String email;
 }

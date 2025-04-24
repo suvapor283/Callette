@@ -29,12 +29,11 @@ public class AuthApiController {
             userService.create(
                     request.getUsername(),
                     request.getPassword(),
-                    request.getEmail(),
-                    request.getName(),
-                    request.getGender(),
                     request.getNickname(),
+                    request.getName(),
                     request.getBirthDate(),
-                    request.getPhoneNumber()
+                    request.getPhoneNumber(),
+                    request.getEmail()
             );
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity
@@ -62,11 +61,6 @@ public class AuthApiController {
         return checkDuplicate(userService.existsByUsername(username), "username");
     }
 
-    @GetMapping("/check-email")
-    public ResponseEntity<?> checkEmail(@RequestParam String email) {
-        return checkDuplicate(userService.existsByEmail(email), "email");
-    }
-
     @GetMapping("/check-nickname")
     public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
         return checkDuplicate(userService.existsByNickname(nickname), "nickname");
@@ -75,5 +69,10 @@ public class AuthApiController {
     @GetMapping("/check-phone")
     public ResponseEntity<?> checkPhoneNumber(@RequestParam String phoneNumber) {
         return checkDuplicate(userService.existsByPhoneNumber(phoneNumber), "phoneNumber");
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        return checkDuplicate(userService.existsByEmail(email), "email");
     }
 }
