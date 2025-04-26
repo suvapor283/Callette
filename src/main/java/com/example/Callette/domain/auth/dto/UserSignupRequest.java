@@ -21,17 +21,12 @@ public class UserSignupRequest {
     @NotBlank
     private String password2;
 
-    private String email;
+    @NotBlank
+    private String nickname;
 
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z가-힣]+$")
     private String name;
-
-    @NotBlank
-    private String gender;
-
-    @NotBlank
-    private String nickname;
 
     @NotBlank
     @Pattern(regexp = "^\\d{8}$")
@@ -40,4 +35,6 @@ public class UserSignupRequest {
     @NotBlank
     @Pattern(regexp = "^[0-9]{10,11}$")
     private String phoneNumber;
+
+    private String email;
 }
