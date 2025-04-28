@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -19,60 +21,26 @@ public class AuthApiController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequest request) {
-        if (!request.getPassword().equals(request.getPassword2())) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "passwords do not match"));
+    public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequest request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorMessages = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> {
+                errorMessages.put(error.getField(), error.getDefaultMessage());
+            });
+
+            return ResponseEntity.badRequest().body(errorMessages);
         }
+
+        ResponseEntity<?> duplicateCheck = userService.checkDuplicate(request);
+        if (duplicateCheck != null) return duplicateCheck;
+
         try {
-            userService.create(
-                    request.getUsername(),
-                    request.getPassword(),
-                    request.getNickname(),
-                    request.getName(),
-                    request.getBirthDate(),
-                    request.getPhoneNumber(),
-                    request.getEmail()
-            );
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(Map.of("message", "user already exists"));
+            userService.create(request);
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("signup failed" + e.getMessage());
+                    .body(Map.of("message", "회원가입 처리 중 오류 발생", "error", e.getMessage()));
         }
-        return ResponseEntity.ok(Map.of("message", "signup successful"));
-    }
-
-    private ResponseEntity<?> checkDuplicate(boolean exists, String fieldName) {
-        if (exists) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("message", fieldName + " already exists"));
-        }
-
-        return ResponseEntity.ok(fieldName + " successful");
-    }
-
-    @GetMapping("/check-username")
-    public ResponseEntity<?> checkUsername(@RequestParam String username) {
-        return checkDuplicate(userService.existsByUsername(username), "username");
-    }
-
-    @GetMapping("/check-nickname")
-    public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
-        return checkDuplicate(userService.existsByNickname(nickname), "nickname");
-    }
-
-    @GetMapping("/check-phone")
-    public ResponseEntity<?> checkPhoneNumber(@RequestParam String phoneNumber) {
-        return checkDuplicate(userService.existsByPhoneNumber(phoneNumber), "phoneNumber");
-    }
-
-    @GetMapping("/check-email")
-    public ResponseEntity<?> checkEmail(@RequestParam String email) {
-        return checkDuplicate(userService.existsByEmail(email), "email");
+        return ResponseEntity.ok(Map.of("message", "환영합니다! 회원가입이 완료되었습니다."));
     }
 }

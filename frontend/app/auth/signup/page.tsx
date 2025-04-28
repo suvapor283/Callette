@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   CardContent,
@@ -12,8 +12,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 
-export default function signup() {
-  const [formData, setFormdata] = useState({
+interface SignupFormData {
+  username: string;
+  password: string;
+  password2: string;
+  nickname: string;
+  name: string;
+  birthDate: string;
+  phoneNumber: string;
+  email: string;
+}
+
+export default function SignupPage() {
+  const [formData, setFormdata] = useState<SignupFormData>({
     username: '',
     password: '',
     password2: '',
@@ -23,6 +34,16 @@ export default function signup() {
     phoneNumber: '',
     email: '',
   });
+
+  const [errorMessages, setErrorMessages] = useState<any>({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormdata((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleSignup = async () => {
     try {
@@ -35,16 +56,68 @@ export default function signup() {
       });
 
       if (response.ok) {
-        alert('회원가입 성공!');
+        setErrorMessages({});
+        alert('회원가입을 축하합니다!');
       } else {
         const errorData = await response.json();
-        alert('회원가입 실패: ${errorData.message}');
+        setErrorMessages(errorData);
       }
     } catch (error) {
-      alert('회원가입 중 오류 발생');
+      alert('회원가입 중 오류가 발생했습니다');
       console.error(error);
     }
   };
+
+  const formFields = [
+    {
+      id: 'username',
+      label: 'User ID',
+      placeholder: '아이디를 입력하세요',
+      required: true,
+    },
+    {
+      id: 'password',
+      label: 'Password',
+      placeholder: '비밀번호를 입력하세요',
+      required: true,
+    },
+    {
+      id: 'password2',
+      label: 'Confirm Password',
+      placeholder: '비밀번호를 다시 입력하세요',
+      required: true,
+    },
+    {
+      id: 'nickname',
+      label: 'Nickname',
+      placeholder: '사용할 닉네임을 입력하세요',
+      required: true,
+    },
+    {
+      id: 'name',
+      label: 'Name',
+      placeholder: '이름을 입력하세요',
+      required: true,
+    },
+    {
+      id: 'birthDate',
+      label: 'Birth Date',
+      placeholder: '예: 19950101',
+      required: true,
+    },
+    {
+      id: 'phoneNumber',
+      label: 'Phone Number',
+      placeholder: '예: 01012345678',
+      required: true,
+    },
+    {
+      id: 'email',
+      label: 'E-mail',
+      placeholder: '예: example@email.com',
+      required: false,
+    },
+  ];
 
   return (
     <div className="mx-auto my-2 w-[70%] min-w-[500px]">
@@ -55,123 +128,27 @@ export default function signup() {
       </CardHeader>
 
       <CardContent>
-        <form className="grid items-center gap-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="username">
-              User ID
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="username"
-              placeholder="아이디"
-              value={formData.username}
-              onChange={(e) =>
-                setFormdata({ ...formData, username: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="password">
-              Password
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="password"
-              placeholder="비밀번호"
-              value={formData.password}
-              onChange={(e) =>
-                setFormdata({ ...formData, password: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="password2">
-              Confirm Password
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="password2"
-              placeholder="비밀번호 확인"
-              value={formData.password2}
-              onChange={(e) =>
-                setFormdata({ ...formData, password2: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="nickname">
-              Nickname
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="nickname"
-              placeholder="닉네임"
-              value={formData.nickname}
-              onChange={(e) =>
-                setFormdata({ ...formData, nickname: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="name">
-              Name
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="name"
-              placeholder="이름"
-              value={formData.name}
-              onChange={(e) =>
-                setFormdata({ ...formData, name: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="birthdate">
-              Birth Date
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="birthdate"
-              placeholder="생년월일 8자리"
-              value={formData.birthDate}
-              onChange={(e) =>
-                setFormdata({ ...formData, birthDate: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="phoneNumber">
-              Phone Number
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="phoneNumber"
-              placeholder="휴대전화번호"
-              value={formData.phoneNumber}
-              onChange={(e) =>
-                setFormdata({ ...formData, phoneNumber: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="email">[선택] E-mail</Label>
-            <Input
-              id="email"
-              placeholder="example@email.com"
-              value={formData.email}
-              onChange={(e) =>
-                setFormdata({ ...formData, email: e.target.value })
-              }
-            />
-          </div>
+        <form className="items-center space-y-3">
+          {formFields.map((field) => (
+            <div className="space-y-1.5" key={field.id}>
+              <Label htmlFor={field.id}>
+                {field.label}
+                {field.required && <span className="text-red-500">*</span>}
+              </Label>
+              <Input
+                id={field.id}
+                name={field.id}
+                placeholder={field.placeholder}
+                value={formData[field.id as keyof SignupFormData]}
+                onChange={handleChange}
+              />
+              {errorMessages[field.id] && (
+                <span className="text-sm text-red-500">
+                  {errorMessages[field.id]}
+                </span>
+              )}
+            </div>
+          ))}
         </form>
       </CardContent>
 
