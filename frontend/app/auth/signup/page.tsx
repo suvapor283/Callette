@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   CardContent,
@@ -25,6 +26,7 @@ interface SignupFormData {
 }
 
 export default function SignupPage() {
+  const router = useRouter();
   const [formData, setFormdata] = useState<SignupFormData>({
     username: '',
     password: '',
@@ -135,6 +137,7 @@ export default function SignupPage() {
       if (response.ok) {
         setErrorMessages({});
         alert('회원가입을 축하합니다!');
+        router.push('/');
       } else {
         const errorData = await response.json();
         setErrorMessages(errorData);
