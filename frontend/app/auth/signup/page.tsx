@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Key, Vault } from 'lucide-react';
 
 interface SignupFormData {
   username: string;
@@ -35,7 +36,71 @@ export default function SignupPage() {
     email: '',
   });
 
-  const [errorMessages, setErrorMessages] = useState<any>({});
+  const [errorMessages, setErrorMessages] = useState<
+    Partial<Record<keyof SignupFormData, string>>
+  >({});
+
+  const validateField = (name: string, value: string) => {
+    let error = '';
+
+    switch (name) {
+      case 'username':
+        if (!value) error = '아이디는 필수 정보입니다.';
+        else if (!/^[a-z0-9_-]{5,20}$/.test(value))
+          error =
+            '아이디는 5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다.';
+        break;
+
+      case 'password':
+        if (!value) error = '비밀번호는 필수 정보입니다.';
+        else if (
+          !/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,16}$/.test(value)
+        )
+          error =
+            '비밀번호는 8~16자의 영문 대/소문자, 숫자, 특수문자를 모두 포함해야 합니다.';
+        break;
+
+      case 'password2':
+        if (value !== formData.password)
+          error = '비밀번호가 일치하지 않습니다.';
+        break;
+
+      case 'nickname':
+        if (!value) error = '닉네임은 필수 정보입니다.';
+        break;
+
+      case 'name':
+        if (!value) error = '이름은 필수 정보입니다.';
+        else if (!/^[a-zA-Z가-힣]+$/.test(value))
+          error = '이름은 한글, 영문 대/소문자만 사용 가능합니다.';
+        break;
+
+      case 'birthDate':
+        if (!value) error = '생년월일은 필수 정보입니다.';
+        else if (!/^\d{8}$/.test(value))
+          error = '생년월일은 8자리 숫자여야 합니다.';
+        break;
+
+      case 'phoneNumber':
+        if (!value) error = '휴대폰 번호는 필수 정보입니다.';
+        else if (!/^[0-9]{10,11}$/.test(value))
+          error = '휴대폰 번호는 10~11자리 숫자여야 합니다.';
+        break;
+
+      case 'email':
+        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          error = '유효한 이메일 형식이 아닙니다.';
+        break;
+
+      default:
+        break;
+    }
+
+    setErrorMessages((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,9 +108,21 @@ export default function SignupPage() {
       ...prev,
       [name]: value,
     }));
+
+    validateField(name, value);
   };
 
   const handleSignup = async () => {
+    Object.entries(formData).forEach(([Key, Value]) =>
+      validateField(Key, Value)
+    );
+
+    const hasError = Object.values(errorMessages).some((msg) => msg);
+    if (hasError) {
+      alert('입력한 정보를 다시 확인해주세요.');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:8081/api/auth/signup', {
         method: 'POST',
@@ -142,9 +219,9 @@ export default function SignupPage() {
                 value={formData[field.id as keyof SignupFormData]}
                 onChange={handleChange}
               />
-              {errorMessages[field.id] && (
+              {errorMessages[field.id as keyof SignupFormData] && (
                 <span className="text-sm text-red-500">
-                  {errorMessages[field.id]}
+                  {errorMessages[field.id as keyof SignupFormData]}
                 </span>
               )}
             </div>
