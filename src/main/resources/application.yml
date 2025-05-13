@@ -1,6 +1,9 @@
 server:
   port: 8081
 
+jwt:
+  secret: your-secret-key-here
+
 spring:
   jpa:
     hibernate:
