@@ -235,7 +235,10 @@ export default function SignupPage() {
       <CardFooter className="flex justify-between">
         <p className="text-center text-sm text-gray-500">
           이미 계정이 있으신가요?
-          <Link href="#" className="px-1 text-blue-600 hover:underline">
+          <Link
+            href="/auth/login"
+            className="px-1 text-blue-600 hover:underline"
+          >
             로그인
           </Link>
         </p>

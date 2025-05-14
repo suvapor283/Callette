@@ -16,7 +16,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
         <h1 className="text-xl font-semibold">Calendar</h1>
       </div>
       <div className="flex items-center space-x-2">
-        <Link href="#">
+        <Link href="/auth/login">
           <Button variant="outline" className="w-[80px]">
             sign in
           </Button>
