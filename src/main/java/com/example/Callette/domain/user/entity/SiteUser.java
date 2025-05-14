@@ -1,5 +1,6 @@
 package com.example.Callette.domain.user.entity;
 
+import com.example.Callette.domain.user.role.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,4 +38,7 @@ public class SiteUser {
 
     @Column(unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 }
