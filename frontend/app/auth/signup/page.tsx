@@ -143,7 +143,7 @@ export default function SignupPage() {
         setErrorMessages(errorData);
       }
     } catch (error) {
-      alert('회원가입 중 오류가 발생했습니다');
+      alert('회원가입 중 오류가 발생했습니다.');
       console.error(error);
     }
   };
@@ -152,31 +152,31 @@ export default function SignupPage() {
     {
       id: 'username',
       label: 'User ID',
-      placeholder: '아이디를 입력하세요',
+      placeholder: '아이디를 입력하세요.',
       required: true,
     },
     {
       id: 'password',
       label: 'Password',
-      placeholder: '비밀번호를 입력하세요',
+      placeholder: '비밀번호를 입력하세요.',
       required: true,
     },
     {
       id: 'password2',
       label: 'Confirm Password',
-      placeholder: '비밀번호를 다시 입력하세요',
+      placeholder: '비밀번호를 다시 입력하세요.',
       required: true,
     },
     {
       id: 'nickname',
       label: 'Nickname',
-      placeholder: '사용할 닉네임을 입력하세요',
+      placeholder: '사용할 닉네임을 입력하세요.',
       required: true,
     },
     {
       id: 'name',
       label: 'Name',
-      placeholder: '이름을 입력하세요',
+      placeholder: '이름을 입력하세요.',
       required: true,
     },
     {
@@ -200,18 +200,24 @@ export default function SignupPage() {
   ];
 
   return (
-    <div className="mx-auto my-2 w-[70%] min-w-[500px]">
+    <div className="m-auto w-full max-w-[500px]">
       <CardHeader>
-        <CardTitle className="p-2 text-center text-2xl font-bold">
+        <CardTitle className="text-center text-2xl font-bold">
           Sign Up
         </CardTitle>
       </CardHeader>
 
       <CardContent>
-        <form className="items-center space-y-3">
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSignup;
+          }}
+        >
           {formFields.map((field) => (
-            <div className="space-y-1.5" key={field.id}>
-              <Label htmlFor={field.id}>
+            <div className="flex flex-col space-y-2" key={field.id}>
+              <Label htmlFor={field.id} className="font-semibold text-gray-600">
                 {field.label}
                 {field.required && <span className="text-red-500">*</span>}
               </Label>
@@ -219,11 +225,12 @@ export default function SignupPage() {
                 id={field.id}
                 name={field.id}
                 placeholder={field.placeholder}
+                className="w-full"
                 value={formData[field.id as keyof SignupFormData]}
                 onChange={handleChange}
               />
               {errorMessages[field.id as keyof SignupFormData] && (
-                <span className="text-sm text-red-500">
+                <span className="text-xs text-red-500">
                   {errorMessages[field.id as keyof SignupFormData]}
                 </span>
               )}
@@ -232,8 +239,11 @@ export default function SignupPage() {
         </form>
       </CardContent>
 
-      <CardFooter className="flex justify-between">
-        <p className="text-center text-sm text-gray-500">
+      <CardFooter className="flex flex-col items-center">
+        <Button onClick={handleSignup} className="w-full">
+          회원가입
+        </Button>
+        <p className="mt-5 text-center text-sm text-gray-500">
           이미 계정이 있으신가요?
           <Link
             href="/auth/login"
@@ -242,7 +252,6 @@ export default function SignupPage() {
             로그인
           </Link>
         </p>
-        <Button onClick={handleSignup}>회원가입</Button>
       </CardFooter>
     </div>
   );
