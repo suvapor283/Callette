@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -21,6 +22,7 @@ interface LoginFormData {
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormdata] = useState<LoginFormData>({
     username: '',
     password: '',
@@ -57,6 +59,10 @@ export default function LoginPage() {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        const token = data.token;
+
+        login(token);
         setErrorMessages('');
         router.push('/');
       } else {

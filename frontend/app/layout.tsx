@@ -1,6 +1,7 @@
 import './globals.css';
 import localFont from 'next/font/local';
 import ClientLayout from './ClientLayout';
+import { AuthProvider } from './contexts/auth-context';
 import Footer from '@/components/Footer';
 import { Card } from '@/components/ui/card';
 
@@ -25,11 +26,13 @@ export default function RootLayout({
         className={`${pretendard.variable} min-w-[600px] antialiased`}
         style={{ fontFamily: 'var(--font-pretendard)' }}
       >
-        <ClientLayout />
-        <Card className="mx-auto my-6 flex min-h-screen w-[80%] min-w-[600px] flex-col p-6">
-          {children}
-        </Card>
-        <Footer />
+        <AuthProvider>
+          <ClientLayout />
+          <Card className="mx-auto my-6 flex min-h-screen w-[80%] min-w-[600px] flex-col p-6">
+            {children}
+          </Card>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
