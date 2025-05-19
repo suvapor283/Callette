@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserSignupRequest {
+public class AuthSignupRequest {
 
     @NotBlank
     @Pattern(regexp = "^[a-z0-9_-]{5,20}$")

@@ -1,6 +1,6 @@
 package com.example.Callette.domain.user.service;
 
-import com.example.Callette.domain.auth.dto.UserSignupRequest;
+import com.example.Callette.domain.auth.dto.AuthSignupRequest;
 import com.example.Callette.domain.user.entity.SiteUser;
 import com.example.Callette.domain.user.repository.UserRepository;
 import com.example.Callette.domain.user.role.UserRole;
@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public SiteUser create(UserSignupRequest request) {
+    public SiteUser create(AuthSignupRequest request) {
         SiteUser user = new SiteUser();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
         return this.userRepository.save(user);
     }
 
-    public ResponseEntity<?> checkDuplicate(UserSignupRequest request) {
+    public ResponseEntity<?> checkDuplicate(AuthSignupRequest request) {
         Map<String, String> errorMessages = new HashMap<>();
 
         if (userRepository.existsByUsername(request.getUsername())) {

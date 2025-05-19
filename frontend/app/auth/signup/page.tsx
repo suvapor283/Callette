@@ -12,7 +12,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Key, Vault } from 'lucide-react';
 
 interface SignupFormData {
   username: string;
@@ -121,7 +120,6 @@ export default function SignupPage() {
 
     const hasError = Object.values(errorMessages).some((msg) => msg);
     if (hasError) {
-      alert('입력한 정보를 다시 확인해주세요.');
       return;
     }
 
@@ -134,16 +132,25 @@ export default function SignupPage() {
         body: JSON.stringify(formData),
       });
 
+      const errorData = await response.json();
+
       if (response.ok) {
         setErrorMessages({});
-        alert('회원가입을 축하합니다!');
+        alert(errorData.message);
         router.push('/');
       } else {
-        const errorData = await response.json();
-        setErrorMessages(errorData);
+        if (
+          typeof errorData === 'object' &&
+          !Array.isArray(errorData) &&
+          !errorData.message
+        ) {
+          setErrorMessages(errorData);
+        } else {
+          alert(errorData.message);
+        }
       }
     } catch (error) {
-      alert('회원가입 중 오류가 발생했습니다.');
+      alert('회원가입 중 네트워크 오류가 발생했습니다.');
       console.error(error);
     }
   };
@@ -154,48 +161,56 @@ export default function SignupPage() {
       label: 'User ID',
       placeholder: '아이디를 입력하세요.',
       required: true,
+      type: 'text',
     },
     {
       id: 'password',
       label: 'Password',
       placeholder: '비밀번호를 입력하세요.',
       required: true,
+      type: 'password',
     },
     {
       id: 'password2',
       label: 'Confirm Password',
       placeholder: '비밀번호를 다시 입력하세요.',
       required: true,
+      type: 'password',
     },
     {
       id: 'nickname',
       label: 'Nickname',
       placeholder: '사용할 닉네임을 입력하세요.',
       required: true,
+      type: 'text',
     },
     {
       id: 'name',
       label: 'Name',
       placeholder: '이름을 입력하세요.',
       required: true,
+      type: 'text',
     },
     {
       id: 'birthDate',
       label: 'Birth Date',
       placeholder: '예: 19950101',
       required: true,
+      type: 'text',
     },
     {
       id: 'phoneNumber',
       label: 'Phone Number',
       placeholder: '예: 01012345678',
       required: true,
+      type: 'text',
     },
     {
       id: 'email',
       label: 'E-mail',
       placeholder: '예: example@email.com',
       required: false,
+      type: 'text',
     },
   ];
 
@@ -228,6 +243,7 @@ export default function SignupPage() {
                 className="w-full"
                 value={formData[field.id as keyof SignupFormData]}
                 onChange={handleChange}
+                type={field.type}
               />
               {errorMessages[field.id as keyof SignupFormData] && (
                 <span className="text-xs text-red-500">

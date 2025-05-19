@@ -1,7 +1,7 @@
 package com.example.Callette.domain.auth.controller;
 
-import com.example.Callette.domain.auth.dto.LoginRequest;
-import com.example.Callette.domain.auth.dto.UserSignupRequest;
+import com.example.Callette.domain.auth.dto.AuthLoginRequest;
+import com.example.Callette.domain.auth.dto.AuthSignupRequest;
 import com.example.Callette.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +17,12 @@ public class AuthApiController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequest request, BindingResult bindingResult) {
+    public ResponseEntity<?> signup(@Valid @RequestBody AuthSignupRequest request, BindingResult bindingResult) {
         return authService.signup(request, bindingResult);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
+    public ResponseEntity<?> login(@Valid @RequestBody AuthLoginRequest request, BindingResult bindingResult) {
+        return authService.login(request, bindingResult);
     }
 }

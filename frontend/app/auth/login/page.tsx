@@ -70,7 +70,7 @@ export default function LoginPage() {
         setErrorMessages(errorData.message);
       }
     } catch (error) {
-      alert('로그인 중 오류가 발생했습니다.');
+      alert('로그인 중 네트워크 오류가 발생했습니다.');
       console.error(error);
     }
   };

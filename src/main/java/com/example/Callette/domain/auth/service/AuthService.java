@@ -1,10 +1,9 @@
 package com.example.Callette.domain.auth.service;
 
-import com.example.Callette.domain.auth.dto.LoginRequest;
-import com.example.Callette.domain.auth.dto.UserSignupRequest;
+import com.example.Callette.domain.auth.dto.AuthLoginRequest;
+import com.example.Callette.domain.auth.dto.AuthSignupRequest;
 import com.example.Callette.domain.auth.jwt.JwtTokenProvider;
 import com.example.Callette.domain.user.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public ResponseEntity<?> signup(UserSignupRequest request, BindingResult bindingResult) {
+    public ResponseEntity<?> signup(AuthSignupRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errorMessages = new HashMap<>();
             bindingResult.getFieldErrors().forEach(error -> {
@@ -44,12 +43,21 @@ public class AuthService {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "회원가입 처리 중 오류 발생", "error", e.getMessage()));
+                    .body(Map.of("message", "회원가입 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", "error", e.getMessage()));
         }
         return ResponseEntity.ok(Map.of("message", "환영합니다! 회원가입이 완료되었습니다."));
     }
 
-    public ResponseEntity<?> login(@Valid LoginRequest request) {
+    public ResponseEntity<?> login(AuthLoginRequest request, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errorMessages = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> {
+                errorMessages.put(error.getField(), error.getDefaultMessage());
+            });
+
+            return ResponseEntity.badRequest().body(errorMessages);
+        }
+
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
 
@@ -59,6 +67,10 @@ public class AuthService {
             return ResponseEntity.ok(Map.of("token", jwt));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "아이디 또는 비밀번호를 확인하세요."));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "로그인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", "error", e.getMessage()));
         }
     }
 }
