@@ -2,7 +2,7 @@ server:
   port: 8081
 
 jwt:
-  secret: your-secret-key-here
+  secret: "mySuperSecretKeyWhichIsAtLeast32BytesLongForHS256"
 
 spring:
   jpa:
@@ -18,3 +18,8 @@ spring:
     url: jdbc:mysql://localhost:3306/Callette?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull
     username: root
     password:
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web.filter: DEBUG
