@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -9,210 +9,31 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-
-interface SignupFormData {
-  username: string;
-  password: string;
-  password2: string;
-  nickname: string;
-  name: string;
-  birthDate: string;
-  phoneNumber: string;
-  email: string;
-}
+import { SignupForm } from '@/components/form/SignupForm';
+import { SignupFormProps } from '@/components/form/SignupForm';
 
 export default function SignupPage() {
   const router = useRouter();
-  const [formData, setFormdata] = useState<SignupFormData>({
-    username: '',
-    password: '',
-    password2: '',
-    nickname: '',
-    name: '',
-    birthDate: '',
-    phoneNumber: '',
-    email: '',
-  });
 
-  const [errorMessages, setErrorMessages] = useState<
-    Partial<Record<keyof SignupFormData, string>>
-  >({});
-
-  const validateField = (name: string, value: string) => {
-    let error = '';
-
-    switch (name) {
-      case 'username':
-        if (!value) error = '아이디는 필수 정보입니다.';
-        else if (!/^[a-z0-9_-]{5,20}$/.test(value))
-          error =
-            '아이디는 5~20자의 영문 소문자, 숫자와 특수기호(_),(-)만 사용 가능합니다.';
-        break;
-
-      case 'password':
-        if (!value) error = '비밀번호는 필수 정보입니다.';
-        else if (
-          !/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,16}$/.test(value)
-        )
-          error =
-            '비밀번호는 8~16자의 영문 대/소문자, 숫자, 특수문자를 모두 포함해야 합니다.';
-        break;
-
-      case 'password2':
-        if (value !== formData.password)
-          error = '비밀번호가 일치하지 않습니다.';
-        break;
-
-      case 'nickname':
-        if (!value) error = '닉네임은 필수 정보입니다.';
-        break;
-
-      case 'name':
-        if (!value) error = '이름은 필수 정보입니다.';
-        else if (!/^[a-zA-Z가-힣]+$/.test(value))
-          error = '이름은 한글, 영문 대/소문자만 사용 가능합니다.';
-        break;
-
-      case 'birthDate':
-        if (!value) error = '생년월일은 필수 정보입니다.';
-        else if (!/^\d{8}$/.test(value))
-          error = '생년월일은 8자리 숫자여야 합니다.';
-        break;
-
-      case 'phoneNumber':
-        if (!value) error = '휴대폰 번호는 필수 정보입니다.';
-        else if (!/^[0-9]{10,11}$/.test(value))
-          error = '휴대폰 번호는 10~11자리 숫자여야 합니다.';
-        break;
-
-      case 'email':
-        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-          error = '유효한 이메일 형식이 아닙니다.';
-        break;
-
-      default:
-        break;
-    }
-
-    setErrorMessages((prev) => ({
-      ...prev,
-      [name]: error,
-    }));
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormdata((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    validateField(name, value);
-  };
-
-  const handleSignup = async () => {
-    Object.entries(formData).forEach(([Key, Value]) =>
-      validateField(Key, Value)
-    );
-
-    const hasError = Object.values(errorMessages).some((msg) => msg);
-    if (hasError) {
-      return;
-    }
-
+  const onSubmit: SignupFormProps['onSubmit'] = async (data) => {
     try {
       const response = await fetch('http://localhost:8081/api/auth/signup', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
 
-      const errorData = await response.json();
+      const resData = await response.json();
 
       if (response.ok) {
-        setErrorMessages({});
-        alert(errorData.message);
+        alert(resData.message);
         router.push('/');
-      } else {
-        if (
-          typeof errorData === 'object' &&
-          !Array.isArray(errorData) &&
-          !errorData.message
-        ) {
-          setErrorMessages(errorData);
-        } else {
-          alert(errorData.message);
-        }
       }
     } catch (error) {
       alert('회원가입 중 네트워크 오류가 발생했습니다.');
       console.error(error);
     }
   };
-
-  const formFields = [
-    {
-      id: 'username',
-      label: 'User ID',
-      placeholder: '아이디를 입력하세요.',
-      required: true,
-      type: 'text',
-    },
-    {
-      id: 'password',
-      label: 'Password',
-      placeholder: '비밀번호를 입력하세요.',
-      required: true,
-      type: 'password',
-    },
-    {
-      id: 'password2',
-      label: 'Confirm Password',
-      placeholder: '비밀번호를 다시 입력하세요.',
-      required: true,
-      type: 'password',
-    },
-    {
-      id: 'nickname',
-      label: 'Nickname',
-      placeholder: '사용할 닉네임을 입력하세요.',
-      required: true,
-      type: 'text',
-    },
-    {
-      id: 'name',
-      label: 'Name',
-      placeholder: '이름을 입력하세요.',
-      required: true,
-      type: 'text',
-    },
-    {
-      id: 'birthDate',
-      label: 'Birth Date',
-      placeholder: '예: 19950101',
-      required: true,
-      type: 'text',
-    },
-    {
-      id: 'phoneNumber',
-      label: 'Phone Number',
-      placeholder: '예: 01012345678',
-      required: true,
-      type: 'text',
-    },
-    {
-      id: 'email',
-      label: 'E-mail',
-      placeholder: '예: example@email.com',
-      required: false,
-      type: 'text',
-    },
-  ];
 
   return (
     <div className="m-auto w-full max-w-[500px]">
@@ -223,42 +44,10 @@ export default function SignupPage() {
       </CardHeader>
 
       <CardContent>
-        <form
-          className="space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSignup;
-          }}
-        >
-          {formFields.map((field) => (
-            <div className="flex flex-col space-y-2" key={field.id}>
-              <Label htmlFor={field.id} className="font-semibold text-gray-600">
-                {field.label}
-                {field.required && <span className="text-red-500">*</span>}
-              </Label>
-              <Input
-                id={field.id}
-                name={field.id}
-                placeholder={field.placeholder}
-                className="w-full"
-                value={formData[field.id as keyof SignupFormData]}
-                onChange={handleChange}
-                type={field.type}
-              />
-              {errorMessages[field.id as keyof SignupFormData] && (
-                <span className="text-xs text-red-500">
-                  {errorMessages[field.id as keyof SignupFormData]}
-                </span>
-              )}
-            </div>
-          ))}
-        </form>
+        <SignupForm onSubmit={onSubmit} /> {/* 분리된 폼 컴포넌트 사용 */}
       </CardContent>
 
       <CardFooter className="flex flex-col items-center">
-        <Button onClick={handleSignup} className="w-full">
-          회원가입
-        </Button>
         <p className="mt-5 text-center text-sm text-gray-500">
           이미 계정이 있으신가요?
           <Link
