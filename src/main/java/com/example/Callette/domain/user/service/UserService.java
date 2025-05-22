@@ -62,8 +62,14 @@ public class UserService implements UserDetailsService {
         if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
             errorMessages.put("phoneNumber", "이미 등록된 휴대폰 번호입니다");
         }
-        if (userRepository.existsByEmail(request.getEmail())) {
-            errorMessages.put("email", "이미 등록된 이메일입니다");
+
+        if (request.getEmail() != null && request.getEmail().isBlank()) {
+            request.setEmail(null);
+        }
+        if (request.getEmail() != null) {
+            if (userRepository.existsByEmail(request.getEmail())) {
+                errorMessages.put("email", "이미 등록된 이메일입니다");
+            }
         }
 
         if (!errorMessages.isEmpty()) {

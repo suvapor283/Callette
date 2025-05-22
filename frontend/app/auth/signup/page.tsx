@@ -15,7 +15,10 @@ import { SignupFormProps } from '@/components/form/SignupForm';
 export default function SignupPage() {
   const router = useRouter();
 
-  const onSubmit: SignupFormProps['onSubmit'] = async (data) => {
+  const onSubmit: SignupFormProps['onSubmit'] = async (
+    data,
+    setErrorMessages
+  ) => {
     try {
       const response = await fetch('http://localhost:8081/api/auth/signup', {
         method: 'POST',
@@ -28,6 +31,12 @@ export default function SignupPage() {
       if (response.ok) {
         alert(resData.message);
         router.push('/');
+      } else {
+        if (typeof resData === 'object' && resData !== null) {
+          setErrorMessages(resData);
+        } else {
+          alert('회원가입 실패: 알 수 없는 오류');
+        }
       }
     } catch (error) {
       alert('회원가입 중 네트워크 오류가 발생했습니다.');
@@ -44,7 +53,7 @@ export default function SignupPage() {
       </CardHeader>
 
       <CardContent>
-        <SignupForm onSubmit={onSubmit} /> {/* 분리된 폼 컴포넌트 사용 */}
+        <SignupForm onSubmit={onSubmit} />
       </CardContent>
 
       <CardFooter className="flex flex-col items-center">

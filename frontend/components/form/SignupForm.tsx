@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -62,10 +62,19 @@ const SignupSchema = z
 type SignupFormData = z.infer<typeof SignupSchema>;
 
 export interface SignupFormProps {
-  onSubmit: (data: SignupFormData) => void;
+  onSubmit: (
+    data: SignupFormData,
+    setErrorMessages: React.Dispatch<
+      React.SetStateAction<Partial<Record<keyof SignupFormData, string>>>
+    >
+  ) => void;
 }
 
 export function SignupForm({ onSubmit }: SignupFormProps) {
+  const [errorMessages, setErrorMessages] = useState<
+    Partial<Record<keyof SignupFormData, string>>
+  >({});
+
   const form = useForm<SignupFormData>({
     resolver: zodResolver(SignupSchema),
     mode: 'onChange',
@@ -132,11 +141,33 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
     },
   ];
 
+  const allValues = form.watch();
+
+  React.useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      if (!name) return;
+
+      const typedName = name as keyof SignupFormData;
+
+      if (type === 'change' && errorMessages[typedName]) {
+        setErrorMessages((prev) => ({
+          ...prev,
+          [typedName]: undefined,
+        }));
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form.watch, errorMessages]);
+
   return (
     <Form {...form}>
       <form
         className="space-y-5"
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit((data) => {
+          setErrorMessages({});
+          onSubmit(data, setErrorMessages);
+        })}
         noValidate
       >
         {formFields.map(({ id, label, placeholder, type }) => (
@@ -157,7 +188,14 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+
+                {errorMessages[id as keyof SignupFormData] ? (
+                  <p className="text-[0.8rem] font-medium text-destructive">
+                    {errorMessages[id as keyof SignupFormData]}
+                  </p>
+                ) : (
+                  <FormMessage />
+                )}
               </FormItem>
             )}
           />
