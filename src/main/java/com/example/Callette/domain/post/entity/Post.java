@@ -1,25 +1,22 @@
 package com.example.Callette.domain.post.entity;
 
+import com.example.Callette.global.jpa.BaseEntity;
 import jakarta.persistence.*;
 
 import com.example.Callette.global.enums.Visibility;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Post {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@AllArgsConstructor
+@SuperBuilder
+@ToString(callSuper = true)
+public class Post extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     private String title;
