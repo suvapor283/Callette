@@ -19,9 +19,7 @@ public class PostService {
         return this.postRepository.findAll();
     }
 
-    public Post getPost(Long id) {
-        Optional<Post> postOptional = this.postRepository.findById(id);
-
-        return postOptional.orElseThrow(() -> new EntityNotFoundException("Post not fount"));
+    public Optional<Post> getPost(Long id) {
+        return this.postRepository.findById(id);
     }
 }
