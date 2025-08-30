@@ -1,35 +1,10 @@
 import Link from "next/link";
-import {
-  Bars3Icon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header */}
-      <nav className="flex items-center justify-between bg-white p-4 shadow-md">
-        <div className="flex items-center space-x-4">
-          <button>
-            <Bars3Icon className="size-6" />
-          </button>
-          <h1 className="text-xl font-semibold">Calendar</h1>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Link href="/auth/login">
-            <Button variant="outline" className="w-[80px]">
-              sign in
-            </Button>
-          </Link>
-          <Link href="/auth/signup">
-            <Button className="w-[80px]">sign up</Button>
-          </Link>
-        </div>
-      </nav>
-
       {/* Main */}
       <main className="mx-auto my-6 flex min-h-screen w-[80%] min-w-[600px] flex-col p-6 border border-gray-300 rounded-lg">
         <div className="relative flex items-center justify-between">
@@ -80,22 +55,6 @@ export default function Home() {
           <div className="h-24 border p-2">7</div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="flex items-center justify-between bg-white p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-        <span className="text-gray-600">© 2025 Calendar App</span>
-        <div>
-          <Link href="#">
-            <Button variant="link">Privacy</Button>
-          </Link>
-          <Link href="#">
-            <Button variant="link">Terms</Button>
-          </Link>
-          <Link href="#">
-            <Button variant="link">Help</Button>
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 }
