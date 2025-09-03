@@ -1,9 +1,3 @@
-import Calendar from "@/components/domain/calendar/Calendar";
-
 export default function Home() {
-  return (
-    <main>
-      <Calendar />
-    </main>
-  );
+  return <main>메인페이지</main>;
 }
