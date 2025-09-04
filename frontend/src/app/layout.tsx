@@ -1,8 +1,10 @@
-import "./style/globals.css";
+import "./globals.css";
 import localFont from "next/font/local";
 import type { Metadata } from "next";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import AppSidebar from "@/components/layout/Sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -25,11 +27,14 @@ export default function RootLayout({
         className={`${pretendard.variable} min-w-[600px] antialiased`}
         style={{ fontFamily: "var(--font-pretendard)" }}
       >
-        <div className="min-h-screen flex flex-col justify-between">
-          <Header />
-          {children}
-          <Footer />
-        </div>
+        <SidebarProvider>
+          <AppSidebar />
+          <div className="flex flex-1 flex-col justify-between">
+            <Header />
+            {children}
+            <Footer />
+          </div>
+        </SidebarProvider>
       </body>
     </html>
   );
