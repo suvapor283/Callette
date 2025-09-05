@@ -24,12 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${pretendard.variable} min-w-[600px] antialiased`}
+        className={`${pretendard.variable} antialiased`}
         style={{ fontFamily: "var(--font-pretendard)" }}
       >
         <SidebarProvider>
           <AppSidebar />
-          <div className="flex flex-1 flex-col justify-between">
+          <div className="flex min-h-screen flex-1 flex-col justify-between">
             <Header />
             {children}
             <Footer />

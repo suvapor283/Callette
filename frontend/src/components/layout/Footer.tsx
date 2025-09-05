@@ -1,20 +1,24 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+const footerLinks = [
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
+  { href: "/help", label: "Help" },
+];
+
 export default function Footer() {
   return (
-    <footer className="flex items-center justify-between p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-      <span className="text-gray-600">© 2025 Calendar App</span>
+    <footer className="flex flex-col items-center justify-between px-6 py-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] sm:flex-row">
+      <span className="text-sm text-gray-600">© 2025 Calendar App</span>
       <div>
-        <Link href="#">
-          <Button variant="link">Privacy</Button>
-        </Link>
-        <Link href="#">
-          <Button variant="link">Terms</Button>
-        </Link>
-        <Link href="#">
-          <Button variant="link">Help</Button>
-        </Link>
+        {footerLinks.map((link) => (
+          <Link key={link.href} href={link.href}>
+            <Button variant="link" className="text-xs">
+              {link.label}
+            </Button>
+          </Link>
+        ))}
       </div>
     </footer>
   );
