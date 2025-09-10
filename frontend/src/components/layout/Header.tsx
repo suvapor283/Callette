@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/button";
 
 export default function Header() {
   return (
-    <nav className="flex justify-between px-6 py-3 shadow-md">
+    <nav className="relative z-10 flex justify-between px-6 py-3 shadow-md">
       <div className="flex items-center sm:space-x-4">
         <SidebarTrigger />
-        <Link href="/" className="font-semibold sm:text-xl">
+        <Link href="/" className="cursor-pointer font-semibold sm:text-xl">
           Callette by
         </Link>
       </div>
